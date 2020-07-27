@@ -185,3 +185,111 @@ data Conference = Conference
 λ> name oli
 Name {firstName = "Oli", lastName = "Makhasoeva"}
 ```
+
+---
+
+[.code-highlight: 1]
+```haskell
+import Data.Function ((&))
+
+λ> :t (&)
+(&) :: a -> (a -> b) -> b
+λ> length [4, 6, 8]
+3
+λ> [4, 6, 8] & length
+3
+```
+
+---
+
+[.code-highlight: 1-4]
+```haskell
+import Data.Function ((&))
+
+λ> :t (&)
+(&) :: a -> (a -> b) -> b
+λ> length [4, 6, 8]
+3
+λ> [4, 6, 8] & length
+3
+```
+
+---
+
+[.code-highlight: 1-6]
+```haskell
+import Data.Function ((&))
+
+λ> :t (&)
+(&) :: a -> (a -> b) -> b
+λ> length [4, 6, 8]
+3
+λ> [4, 6, 8] & length
+3
+```
+
+---
+
+```haskell
+import Data.Function ((&))
+
+λ> :t (&)
+(&) :: a -> (a -> b) -> b
+λ> length [4, 6, 8]
+3
+λ> [4, 6, 8] & length
+3
+```
+
+---
+
+```haskell
+data Conference = Conference
+  { organizer :: Organizer
+  , speakers  :: [Speaker]
+  } deriving Show
+```
+
+```haskell
+λ> name oli
+Name {firstName = "Oli", lastName = "Makhasoeva"}
+```
+
+---
+
+```haskell
+data Conference = Conference
+  { organizer :: Organizer
+  , speakers  :: [Speaker]
+  } deriving Show
+```
+
+```haskell
+λ> oli & name
+Name {firstName = "Oli", lastName = "Makhasoeva"}
+```
+
+---
+
+```haskell
+data Conference = Conference
+  { organizer :: Organizer
+  , speakers  :: [Speaker]
+  } deriving Show
+```
+
+```haskell
+λ> oli & name & firstName
+"Oli"
+```
+
+---
+
+```haskell
+organizerCountry :: Conference -> String
+organizerCountry conf =
+  conf & organizer
+       & contact
+	   & address
+	   & country
+```

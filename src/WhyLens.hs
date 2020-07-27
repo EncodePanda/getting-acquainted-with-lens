@@ -1,5 +1,7 @@
 module WhyLens where
 
+import           Data.Function ((&))
+
 data Conference = Conference
   { organizer :: Organizer
   , speakers  :: [Speaker]
@@ -30,6 +32,12 @@ data Address = Address
   , country :: String
   } deriving Show
 
+haskellLove :: Conference
+haskellLove = Conference
+  { organizer = oli
+  , speakers = []
+  }
+
 oli :: Organizer
 oli = Organizer
   { name = Name "Oli" "Makhasoeva"
@@ -37,4 +45,11 @@ oli = Organizer
   }
 
 classified :: Contact
-classified = undefined
+classified = Contact
+  { address = Address "Class" "ified" "Ha!"
+  , email = "oli@haskell.love"
+  }
+
+organizerCountry :: Conference -> String
+organizerCountry conf =
+  conf & organizer & contact & address & country
