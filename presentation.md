@@ -372,7 +372,7 @@ data Speaker = Speaker
 
 ---
 
-![autoplay mute loop](presentation/haskellersbelike.mp4)
+![inline](presentation/pray.png)
 
 ---
 
@@ -404,7 +404,6 @@ data Speaker = Speaker
 
 ---
 
-[.code-highlight: 2-18]
 ```haskell
 {-# LANGUAGE DuplicateRecordFields #-}
 module WhyLens where
@@ -425,3 +424,239 @@ data Speaker = Speaker
   , slidesReady :: Bool
   } deriving Show
 ```
+
+---
+
+# But
+
+---
+
+```haskell
+organizerName :: Conference -> Name
+organizerName conference =
+  conference & organizer & name
+```
+
+---
+
+```
+/../src/WhyLens.hs:69:28: error:
+    Ambiguous occurrence ‘name’
+    It could refer to
+       either the field ‘name’, defined at src/WhyLens.hs:34:5
+           or the field ‘name’, defined at src/WhyLens.hs:19:5
+           or the field ‘name’, defined at src/WhyLens.hs:13:5
+```
+
+---
+
+# [fit] {-# LANGUAGE OverloadedLabels      #-}
+
+---
+
+![autoplay mute loop](presentation/haskellersbelike.mp4)
+
+---
+
+```haskell
+{-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedLabels      #-}
+```
+
+---
+[.code-highlight: 1-2]
+
+```haskell
+class IsLabel (x :: Symbol) a where
+  fromLabel :: a
+
+instance IsLabel "encodepanda" Speaker where
+  fromLabel = Speaker
+    { name = Name "Pawel" "Szulc"
+    , slidesReady = False
+    }
+
+pawel :: Speaker
+pawel = fromLabel @"encodepanda"
+```
+
+---
+[.code-highlight: 1-8]
+
+```haskell
+class IsLabel (x :: Symbol) a where
+  fromLabel :: a
+
+instance IsLabel "encodepanda" Speaker where
+  fromLabel = Speaker
+    { name = Name "Pawel" "Szulc"
+    , slidesReady = False
+    }
+
+pawel :: Speaker
+pawel = fromLabel @"encodepanda"
+```
+
+---
+
+```haskell
+class IsLabel (x :: Symbol) a where
+  fromLabel :: a
+
+instance IsLabel "encodepanda" Speaker where
+  fromLabel = Speaker
+    { name = Name "Pawel" "Szulc"
+    , slidesReady = False
+    }
+
+pawel :: Speaker
+pawel = fromLabel @"encodepanda"
+```
+
+---
+
+[.code-highlight: 10-11]
+
+```haskell
+class IsLabel (x :: Symbol) a where
+  fromLabel :: a
+
+instance IsLabel "encodepanda" Speaker where
+  fromLabel = Speaker
+    { name = Name "Pawel" "Szulc"
+    , slidesReady = False
+    }
+
+pawel :: Speaker
+pawel = fromLabel @"encodepanda"
+```
+
+---
+
+[.code-highlight: 10-11]
+```haskell
+class IsLabel (x :: Symbol) a where
+  fromLabel :: a
+
+instance IsLabel "encodepanda" Speaker where
+  fromLabel = Speaker
+    { name = Name "Pawel" "Szulc"
+    , slidesReady = False
+    }
+
+pawel :: Speaker
+pawel = #encodepanda
+```
+
+---
+
+```haskell
+organizerName :: Conference -> Name
+organizerName conference =
+  conference & organizer & name
+```
+
+---
+
+```
+/../src/WhyLens.hs:69:28: error:
+    Ambiguous occurrence ‘name’
+    It could refer to
+       either the field ‘name’, defined at src/WhyLens.hs:34:5
+           or the field ‘name’, defined at src/WhyLens.hs:19:5
+           or the field ‘name’, defined at src/WhyLens.hs:13:5
+```
+
+---
+
+[.code-highlight: 2,8,13]
+
+```haskell
+data Conference = Conference
+  { name      :: String
+  , organizer :: Organizer
+  , speakers  :: [Speaker]
+  } deriving Show
+
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
+  } deriving Show
+
+data Speaker = Speaker
+  { name        :: Name
+  , slidesReady :: Bool
+  } deriving Show
+```
+
+---
+
+[.code-highlight: 1-4]
+
+```haskell
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
+  } deriving Show
+
+instance IsLabel "name" (Organizer -> Name) where
+   fromLabel = name
+```
+
+---
+
+```haskell
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
+  } deriving Show
+
+instance IsLabel "name" (Organizer -> Name) where
+   fromLabel = name
+```
+
+---
+
+```haskell
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
+  } deriving Show
+
+instance IsLabel "name" (Organizer -> Name) where
+   fromLabel = name
+
+organizerName :: Conference -> Name
+organizerName conference =
+  conference & organizer & name
+```
+---
+
+```haskell
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
+  } deriving Show
+
+instance IsLabel "name" (Organizer -> Name) where
+   fromLabel = name
+
+organizerName :: Conference -> Name
+organizerName conference =
+  conference & organizer & #name
+```
+
+---
+
+![inline](presentation/eyes.jpg)
+
+---
+
+![inline](presentation/finalform.jpeg)
+
+---
+
+# Setting things to a record
