@@ -1,9 +1,11 @@
+{-# LANGUAGE DuplicateRecordFields #-}
 module WhyLens where
 
 import           Data.Function ((&))
 
 data Conference = Conference
-  { organizer :: Organizer
+  { name      :: String
+  , organizer :: Organizer
   , speakers  :: [Speaker]
   } deriving Show
 
@@ -23,7 +25,8 @@ data Contact = Contact
   } deriving Show
 
 data Speaker = Speaker
-  { slidesReady :: Bool
+  { name        :: Name
+  , slidesReady :: Bool
   } deriving Show
 
 data Address = Address
@@ -36,6 +39,7 @@ haskellLove :: Conference
 haskellLove = Conference
   { organizer = oli
   , speakers = []
+  , name = "Haskell.Love"
   }
 
 oli :: Organizer

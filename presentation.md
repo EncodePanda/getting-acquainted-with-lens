@@ -293,3 +293,135 @@ organizerCountry conf =
 	   & address
 	   & country
 ```
+
+---
+
+# But
+
+---
+
+```haskell
+data Conference = Conference
+  { organizer :: Organizer
+  , speakers  :: [Speaker]
+  } deriving Show
+
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
+  } deriving Show
+
+data Speaker = Speaker
+  { slidesReady :: Bool
+  } deriving Show
+```
+
+---
+
+```haskell
+data Conference = Conference
+  { name      :: String
+  , organizer :: Organizer
+  , speakers  :: [Speaker]
+  } deriving Show
+
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
+  } deriving Show
+
+data Speaker = Speaker
+  { name        :: Name
+  , slidesReady :: Bool
+  } deriving Show
+```
+
+---
+
+[.code-highlight: 2,8,13]
+
+```haskell
+data Conference = Conference
+  { name      :: String
+  , organizer :: Organizer
+  , speakers  :: [Speaker]
+  } deriving Show
+
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
+  } deriving Show
+
+data Speaker = Speaker
+  { name        :: Name
+  , slidesReady :: Bool
+  } deriving Show
+```
+
+---
+
+```haskell
+/../src/WhyLens.hs:27:5: error:
+    Multiple declarations of ‘name’
+    Declared at: src/WhyLens.hs:12:5
+                 src/WhyLens.hs:27:5
+   |
+27 |   { name        :: Name
+   |
+```
+
+---
+
+![autoplay mute loop](presentation/haskellersbelike.mp4)
+
+---
+
+# [fit] {-# LANGUAGE DuplicateRecordFields #-}
+
+---
+
+[.code-highlight: 2-18]
+```haskell
+{-# LANGUAGE DuplicateRecordFields #-}
+module WhyLens where
+
+data Conference = Conference
+  { name      :: String
+  , organizer :: Organizer
+  , speakers  :: [Speaker]
+  } deriving Show
+
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
+  } deriving Show
+
+data Speaker = Speaker
+  { name        :: Name
+  , slidesReady :: Bool
+  } deriving Show
+```
+
+---
+
+[.code-highlight: 2-18]
+```haskell
+{-# LANGUAGE DuplicateRecordFields #-}
+module WhyLens where
+
+data Conference = Conference
+  { name      :: String
+  , organizer :: Organizer
+  , speakers  :: [Speaker]
+  } deriving Show
+
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
+  } deriving Show
+
+data Speaker = Speaker
+  { name        :: Name
+  , slidesReady :: Bool
+  } deriving Show
+```
