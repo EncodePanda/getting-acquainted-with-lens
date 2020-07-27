@@ -29,3 +29,12 @@ data Address = Address
   , city    :: String
   , country :: String
   } deriving Show
+
+oli :: Organizer
+oli = Organizer
+  { name = Name "Oli" "Makhasoeva"
+  , contact = classified
+  }
+
+classified :: Contact
+classified = undefined
