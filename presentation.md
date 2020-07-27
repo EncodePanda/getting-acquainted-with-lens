@@ -54,6 +54,134 @@ slidenumbers: true
 
 ---
 
+# The Example
+
+---
+
+```haskell
+data Conference = Conference
+  { organizer :: Organizer
+  , speakers  :: [Speaker]
+  } deriving Show
+```
+
+---
+
+```haskell
+data Conference = Conference
+  { organizer :: Organizer
+  , speakers  :: [Speaker]
+  } deriving Show
+
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
+  } deriving Show
+```
+
+---
+
+```haskell
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
+  } deriving Show
+```
+
+---
+
+[.code-highlight: 2,5-9]
+
+```haskell
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
+  } deriving Show
+
+data Name = Name
+  { firstName :: String
+  , lastName  :: String
+  } deriving Show
+```
+
+---
+
+[.code-highlight: 3,5-9]
+
+```haskell
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
+  } deriving Show
+
+data Contact = Contact
+  { address :: Address
+  , email   :: String
+  } deriving Show
+```
+
+---
+
+```haskell
+data Address = Address
+  { street  :: String
+  , city    :: String
+  , country :: String
+  } deriving Show
+```
+
+---
+
+```haskell
+data Conference = Conference
+  { organizer :: Organizer
+  , speakers  :: [Speaker]
+  } deriving Show
+```
+
+---
+[.code-highlight: 3,6-8]
+
+```haskell
+data Conference = Conference
+  { organizer :: Organizer
+  , speakers  :: [Speaker]
+  } deriving Show
+
+data Speaker = Speaker
+  { slidesReady :: Bool
+  } deriving Show
+```
+
+---
+
 # Getting things from a record
 
 ---
+
+```haskell
+data Conference = Conference
+  { organizer :: Organizer
+  , speakers  :: [Speaker]
+  } deriving Show
+
+oli :: Organizer
+oli = Organizer
+  { name = Name "Oli" "Makhasoeva"
+  , contact = classified
+  }
+```
+
+---
+
+```haskell
+data Conference = Conference
+  { organizer :: Organizer
+  , speakers  :: [Speaker]
+  } deriving Show
+```
+
+```haskell
+λ> name oli
+Name {firstName = "Oli", lastName = "Makhasoeva"}
+```
