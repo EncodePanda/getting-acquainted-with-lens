@@ -53,7 +53,9 @@ data Address = Address
 haskellLove :: Conference
 haskellLove = Conference
   { organizer = oli
-  , speakers = []
+  , speakers = [ pawel
+               , marcin
+               ]
   , name = "Haskell.Love"
   }
 
@@ -91,3 +93,23 @@ marcin = Speaker
   { name = Name "Marcin" "Rzeznicki"
   , slidesReady = True
   }
+
+changeOrganizerEmail :: (String -> String) -> Conference ->  Conference
+changeOrganizerEmail modifyEmail conference =
+  let
+    oldOrganizer = conference & organizer
+    newContact = (oldOrganizer & contact)
+      { email = modifyEmail (oldOrganizer & contact & email)
+      }
+    newOrganizer = oldOrganizer { contact = newContact}
+  in
+    conference { organizer = newOrganizer }
+
+allSpeakersNotReady :: Conference -> Conference
+allSpeakersNotReady conference =
+  let
+    oldSpeakers = conference & speakers
+  in
+    conference {
+      speakers = fmap (\s -> s { slidesReady = False}) oldSpeakers
+    }

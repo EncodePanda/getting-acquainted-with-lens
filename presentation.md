@@ -697,16 +697,213 @@ organizerName conference =
 
 ---
 
-```haskell
-λ> haskellLove & speakers
-[]
+[.code-highlight: 1]
 
-λ> haskellLove { speakers = [ pawel, marcin ] } & speakers
-[ Speaker {name = Name { firstName = "Pawel"
-                       , lastName = "Szulc"}
-          , slidesReady = False}
-, Speaker {name = Name { firstName = "Marcin"
-                       , lastName = "Rzeznicki"}
-          , slidesReady = True}
-]
+```haskell
+λ> haskellLove
+Conference
+  { name = "Haskell.Love"
+  , organizer = Organizer {..}
+  , speakers = []
+  }
 ```
+---
+
+```haskell
+λ> haskellLove
+Conference
+  { name = "Haskell.Love"
+  , organizer = Organizer {..}
+  , speakers = []
+  }
+```
+
+---
+
+[.code-highlight: 1]
+
+```haskell
+λ> haskellLove { speakers = [ pawel, marcin ] }
+Conference
+  { name = "Haskell.Love"
+  , organizer = Organizer {..}
+  , speakers = [ Speaker { name = Name { firstName = "Pawel"
+			             , lastName = "Szulc"}
+			             , slidesReady = False
+				     	 }
+               , Speaker { name = Name { firstName = "Marcin"
+				         , lastName = "Rzeznicki"}
+				         , slidesReady = False}
+				  	     ]
+  }
+```
+---
+
+```haskell
+λ> haskellLove { speakers = [ pawel, marcin ] }
+Conference
+  { name = "Haskell.Love"
+  , organizer = Organizer {..}
+  , speakers = [ Speaker { name = Name { firstName = "Pawel"
+			             , lastName = "Szulc"}
+			             , slidesReady = False
+				     	 }
+               , Speaker { name = Name { firstName = "Marcin"
+				         , lastName = "Rzeznicki"}
+				         , slidesReady = False}
+				  	     ]
+  }
+```
+
+---
+# But
+
+---
+[.code-highlight: 1]
+```haskell
+allSpeakersNotReady :: Conference -> Conference
+allSpeakersNotReady conference =
+  let
+    oldSpeakers = conference & speakers
+  in
+    conference {
+      speakers =
+	    fmap (\s -> s { slidesReady = False}) oldSpeakers
+    }
+```
+
+---
+[.code-highlight: 1-2, 6-10]
+```haskell
+allSpeakersNotReady :: Conference -> Conference
+allSpeakersNotReady conference =
+  let
+    oldSpeakers = conference & speakers
+  in
+    conference {
+      speakers =
+	    fmap (\s -> s { slidesReady = False}) oldSpeakers
+    }
+```
+
+---
+
+```haskell
+allSpeakersNotReady :: Conference -> Conference
+allSpeakersNotReady conference =
+  let
+    oldSpeakers = conference & speakers
+  in
+    conference {
+      speakers =
+	    fmap (\s -> s { slidesReady = False}) oldSpeakers
+    }
+```
+
+---
+
+[.code-highlight: 1]
+```haskell
+changeOrganizerEmail :: (String -> String) -> Conference ->  Conference
+changeOrganizerEmail modifyEmail conference =
+  let
+    oldOrganizer = conference & organizer
+    newContact = (oldOrganizer & contact)
+      { email = modifyEmail (oldOrganizer & contact & email)
+      }
+    newOrganizer = oldOrganizer { contact = newContact}
+  in
+    conference { organizer = newOrganizer }
+```
+
+---
+
+[.code-highlight: 1-2]
+```haskell
+changeOrganizerEmail :: (String -> String) -> Conference ->  Conference
+changeOrganizerEmail modifyEmail conference =
+  let
+    oldOrganizer = conference & organizer
+    newContact = (oldOrganizer & contact)
+      { email = modifyEmail (oldOrganizer & contact & email)
+      }
+    newOrganizer = oldOrganizer { contact = newContact}
+  in
+    conference { organizer = newOrganizer }
+```
+
+---
+
+[.code-highlight: 1-2,10]
+```haskell
+changeOrganizerEmail :: (String -> String) -> Conference ->  Conference
+changeOrganizerEmail modifyEmail conference =
+  let
+    oldOrganizer = conference & organizer
+    newContact = (oldOrganizer & contact)
+      { email = modifyEmail (oldOrganizer & contact & email)
+      }
+    newOrganizer = oldOrganizer { contact = newContact}
+  in
+    conference { organizer = newOrganizer }
+```
+
+---
+[.code-highlight: 1-2,8-10]
+```haskell
+changeOrganizerEmail :: (String -> String) -> Conference ->  Conference
+changeOrganizerEmail modifyEmail conference =
+  let
+    oldOrganizer = conference & organizer
+    newContact = (oldOrganizer & contact)
+      { email = modifyEmail (oldOrganizer & contact & email)
+      }
+    newOrganizer = oldOrganizer { contact = newContact}
+  in
+    conference { organizer = newOrganizer }
+```
+
+---
+[.code-highlight: 1-2,5-10]
+```haskell
+changeOrganizerEmail :: (String -> String) -> Conference ->  Conference
+changeOrganizerEmail modifyEmail conference =
+  let
+    oldOrganizer = conference & organizer
+    newContact = (oldOrganizer & contact)
+      { email = modifyEmail (oldOrganizer & contact & email)
+      }
+    newOrganizer = oldOrganizer { contact = newContact}
+  in
+    conference { organizer = newOrganizer }
+```
+
+---
+```haskell
+changeOrganizerEmail :: (String -> String) -> Conference ->  Conference
+changeOrganizerEmail modifyEmail conference =
+  let
+    oldOrganizer = conference & organizer
+    newContact = (oldOrganizer & contact)
+      { email = modifyEmail (oldOrganizer & contact & email)
+      }
+    newOrganizer = oldOrganizer { contact = newContact}
+  in
+    conference { organizer = newOrganizer }
+```
+
+---
+
+![inline](presentation/andrzej.jpg)
+
+---
+[.build-lists: true]
+# What can you do about it
+
+1. Change the programming language
+2. Quit
+3. Ask the Oracle
+
+---
+
+![inline](presentation/oracle.png)
