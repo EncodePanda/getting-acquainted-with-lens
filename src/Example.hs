@@ -57,7 +57,7 @@ oli = Organizer
 
 classified :: Contact
 classified = Contact
-  { address = Address "Class" "ified" "Ha!"
+  { address = Address "Class" "ified" "Classified"
   , email = "oli@haskell.love"
   }
 
