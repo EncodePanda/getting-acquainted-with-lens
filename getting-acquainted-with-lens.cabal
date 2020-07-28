@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 38adc45657cb3fbcc20174b7e6f62ffa0427255c736caec05a4f9c85c7d812dd
+-- hash: c3058756eb13b1a8d05260b277936ef899427bdd9ba985423f13984a6f613d6d
 
 name:           getting-acquainted-with-lens
 version:        0.1.0.0
@@ -27,6 +27,7 @@ source-repository head
 
 library
   exposed-modules:
+      Example
       Lib
       WhyLens
   other-modules:

@@ -907,3 +907,11 @@ changeOrganizerEmail modifyEmail conference =
 ---
 
 ![inline](presentation/oracle.png)
+
+---
+
+# __Lens__[^1]
+
+[^1]: [https://hackage.haskell.org/package/lens](https://hackage.haskell.org/package/lens).
+
+---
