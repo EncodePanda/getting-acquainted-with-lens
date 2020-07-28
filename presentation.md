@@ -173,6 +173,36 @@ oli = Organizer
 ```
 
 ---
+[.code-highlight: 8]
+
+```haskell
+data Conference = Conference
+  { organizer :: Organizer
+  , speakers  :: [Speaker]
+  } deriving Show
+
+oli :: Organizer
+oli = Organizer
+  { name = Name "Oli" "Makhasoeva"
+  , contact = classified
+  }
+```
+
+---
+
+```haskell
+data Conference = Conference
+  { organizer :: Organizer
+  , speakers  :: [Speaker]
+  } deriving Show
+```
+
+```haskell
+λ> :t name
+name :: Organizer -> Name
+```
+
+---
 
 ```haskell
 data Conference = Conference
@@ -450,6 +480,10 @@ organizerName conference =
 
 ---
 
+![inline](presentation/fuu.jpg)
+
+---
+
 # [fit] {-# LANGUAGE OverloadedLabels      #-}
 
 ---
@@ -660,3 +694,19 @@ organizerName conference =
 ---
 
 # Setting things to a record
+
+---
+
+```haskell
+λ> haskellLove & speakers
+[]
+
+λ> haskellLove { speakers = [ pawel, marcin ] } & speakers
+[ Speaker {name = Name { firstName = "Pawel"
+                       , lastName = "Szulc"}
+          , slidesReady = False}
+, Speaker {name = Name { firstName = "Marcin"
+                       , lastName = "Rzeznicki"}
+          , slidesReady = True}
+]
+```

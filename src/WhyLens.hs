@@ -85,3 +85,9 @@ instance IsLabel "encodepanda" Speaker where
 
 pawel :: Speaker
 pawel = fromLabel @"encodepanda"
+
+marcin :: Speaker
+marcin = Speaker
+  { name = Name "Marcin" "Rzeznicki"
+  , slidesReady = True
+  }
