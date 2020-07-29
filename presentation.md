@@ -915,3 +915,520 @@ changeOrganizerEmail modifyEmail conference =
 [^1]: [https://hackage.haskell.org/package/lens](https://hackage.haskell.org/package/lens).
 
 ---
+![inline](presentation/lens1.png)
+
+---
+![inline](presentation/lens1a.png)
+
+---
+![inline](presentation/lens1b.png)
+
+---
+![inline](presentation/lens1c.png)
+
+---
+![inline](presentation/lens1.png)
+
+___
+![inline](presentation/lens2.png)
+
+___
+![inline](presentation/lens3.png)
+
+___
+![inline](presentation/lens4.png)
+
+___
+![inline](presentation/lens4a.png)
+
+___
+![inline](presentation/lens5.png)
+
+___
+![inline](presentation/lens6.png)
+
+___
+![inline](presentation/lens7.png)
+
+___
+![inline](presentation/lens8.png)
+
+___
+![inline](presentation/lens9.png)
+
+___
+![inline](presentation/lens10.png)
+
+___
+![inline](presentation/lens11.png)
+
+___
+![inline](presentation/lens12.png)
+
+___
+![inline](presentation/lens13.png)
+
+___
+![inline](presentation/lens14.png)
+
+___
+![inline](presentation/lens15.png)
+
+___
+![inline](presentation/lens16.png)
+
+___
+![inline](presentation/lens17.png)
+
+___
+![inline](presentation/lens18.png)
+
+---
+
+# Lens' s a
+
+---
+```haskell
+_organizer :: Lens' Conference Organizer
+```
+
+---
+```haskell
+_organizer :: Lens' Conference Organizer
+
+λ> view _organizer haskellLove
+Organizer
+  { name = Name { firstName = "Oli"
+                , lastName = "Makhasoeva"}
+  , contact = Contact {..}
+  }
+```
+
+---
+```haskell
+_organizer :: Lens' Conference Organizer
+
+λ> haskellLove ^. _organizer
+Organizer
+  { name = Name { firstName = "Oli"
+                , lastName = "Makhasoeva"}
+  , contact = Contact {..}
+  }
+```
+
+---
+[.code-highlight: 1-4]
+
+```haskell
+_organizer :: Lens' Conference Organizer
+_contact :: Lens' Organizer Contact
+_address :: Lens' Contact Address
+_country :: Lens' Address String
+
+λ> haskelllove ^. _organizer . _contact . _address . _country
+"classified"
+```
+
+---
+[.code-highlight: 1-4]
+
+```haskell
+_organizer :: Lens' Conference Organizer
+_contact ::              Lens' Organizer Contact
+_address ::                       Lens' Contact Address
+_country ::                              Lens' Address String
+
+λ> haskelllove ^. _organizer . _contact . _address . _country
+"classified"
+```
+
+---
+[.code-highlight: 1-4]
+
+```haskell
+_organizer :: Lens' Conference Organizer
+_contact :: Lens' Organizer Contact
+_address :: Lens' Contact Address
+_country :: Lens' Address String
+
+λ> haskelllove ^. _organizer . _contact . _address . _country
+"classified"
+```
+
+---
+```haskell
+_organizer :: Lens' Conference Organizer
+_contact :: Lens' Organizer Contact
+_address :: Lens' Contact Address
+_country :: Lens' Address String
+
+λ> haskelllove ^. _organizer . _contact . _address . _country
+"classified"
+```
+
+---
+
+# dot?
+
+---
+
+```haskell
+(.) :: (b -> c) -> (a -> b) -> a -> c
+```
+
+# How is that possible?
+
+---
+
+![inline](presentation/magic.gif)
+
+---
+```haskell
+_organizer :: Lens' Conference Organizer
+_contact :: Lens' Organizer Contact
+_address :: Lens' Contact Address
+_country :: Lens' Address String
+
+λ> haskelllove ^. _organizer . _contact . _address . _country
+"classified"
+```
+
+---
+```haskell
+_name :: Lens' Conference String
+
+λ> set _name "Haskell Love 2020" haskellLove
+Conference
+  { name = "Haskell Love 2020"
+  , organizer = Organizer {..}
+  , speakers = [..]
+  }
+```
+
+---
+```haskell
+_name :: Lens' Conference String
+
+λ> (_name .~ "Haskell Love 2020") haskellLove
+Conference
+  { name = "Haskell Love 2020"
+  , organizer = Organizer {..}
+  , speakers = [..]
+  }
+```
+
+---
+```haskell
+_name :: Lens' Conference String
+
+λ> haskellLove & _name .~ "Haskell Love 2020"
+Conference
+  { name = "Haskell Love 2020"
+  , organizer = Organizer {..}
+  , speakers = [..]
+  }
+```
+
+---
+[.code-highlight: 1-4]
+```haskell
+_organizer :: Lens' Conference Organizer
+_contact :: Lens' Organizer Contact
+_address :: Lens' Contact Address
+_country :: Lens' Address String
+
+λ> haskellLove & _organizer . _contact . _address . _country .~ "Poland"
+Conference
+  { name = "Haskell.Love"
+  , organizer =
+      Organizer { name = Name {firstName = "Oli", lastName = "Makhasoeva"}
+                , contact = Contact { address = Address { street = "Class"
+		     	                                        , city = "ified"
+						    		                    , country = "Poland"
+														}
+                , email = "oli@haskell.love"}
+				}
+  , speakers = [...]
+  }
+```
+
+---
+[.code-highlight: 1-6]
+```haskell
+_organizer :: Lens' Conference Organizer
+_contact :: Lens' Organizer Contact
+_address :: Lens' Contact Address
+_country :: Lens' Address String
+
+λ> haskellLove & _organizer . _contact . _address . _country .~ "Poland"
+Conference
+  { name = "Haskell.Love"
+  , organizer =
+      Organizer { name = Name {firstName = "Oli", lastName = "Makhasoeva"}
+                , contact = Contact { address = Address { street = "Class"
+		     	                                        , city = "ified"
+						    		                    , country = "Poland"
+														}
+                , email = "oli@haskell.love"}
+				}
+  , speakers = [...]
+  }
+```
+---
+```haskell
+_organizer :: Lens' Conference Organizer
+_contact :: Lens' Organizer Contact
+_address :: Lens' Contact Address
+_country :: Lens' Address String
+
+λ> haskellLove & _organizer . _contact . _address . _country .~ "Poland"
+Conference
+  { name = "Haskell.Love"
+  , organizer =
+      Organizer { name = Name {firstName = "Oli", lastName = "Makhasoeva"}
+                , contact = Contact { address = Address { street = "Class"
+		     	                                        , city = "ified"
+						    		                    , country = "Poland"
+														}
+                , email = "oli@haskell.love"}
+				}
+  , speakers = [...]
+  }
+```
+---
+[.code-highlight: 6,13]
+```haskell
+_organizer :: Lens' Conference Organizer
+_contact :: Lens' Organizer Contact
+_address :: Lens' Contact Address
+_country :: Lens' Address String
+
+λ> haskellLove & _organizer . _contact . _address . _country .~ "Poland"
+Conference
+  { name = "Haskell.Love"
+  , organizer =
+      Organizer { name = Name {firstName = "Oli", lastName = "Makhasoeva"}
+                , contact = Contact { address = Address { street = "Class"
+		     	                                        , city = "ified"
+						    		                    , country = "Poland"
+														}
+                , email = "oli@haskell.love"}
+				}
+  , speakers = [...]
+  }
+```
+
+---
+```haskell
+_organizer :: Lens' Conference Organizer
+_contact :: Lens' Organizer Contact
+_address :: Lens' Contact Address
+_country :: Lens' Address String
+
+λ> haskellLove & _organizer . _contact . _address . _country .~ "Poland"
+Conference
+  { name = "Haskell.Love"
+  , organizer =
+      Organizer { name = Name {firstName = "Oli", lastName = "Makhasoeva"}
+                , contact = Contact { address = Address { street = "Class"
+		     	                                        , city = "ified"
+						    		                    , country = "Poland"
+														}
+                , email = "oli@haskell.love"}
+				}
+  , speakers = [...]
+  }
+```
+
+---
+```haskell
+_organizer :: Lens' Conference Organizer
+_contact :: Lens' Organizer Contact
+_address :: Lens' Contact Address
+_country :: Lens' Address String
+
+λ> haskellLove & _organizer . _contact . _address . _country .~ "Poland"
+               & _name .~ "Haskell Love 2021"
+Conference
+  { name = "Haskell Love 2021"
+  , organizer =
+      Organizer { name = Name {firstName = "Oli", lastName = "Makhasoeva"}
+                , contact = Contact { address = Address { street = "Class"
+		     	                                        , city = "ified"
+						    		                    , country = "Poland"
+														}
+                , email = "oli@haskell.love"}
+				}
+  , speakers = [...]}
+```
+
+---
+[.code-highlight: 6-7,9,14]
+
+```haskell
+_organizer :: Lens' Conference Organizer
+_contact :: Lens' Organizer Contact
+_address :: Lens' Contact Address
+_country :: Lens' Address String
+
+λ> haskellLove & _organizer . _contact . _address . _country .~ "Poland"
+               & _name .~ "Haskell Love 2021"
+Conference
+  { name = "Haskell Love 2021"
+  , organizer =
+      Organizer { name = Name {firstName = "Oli", lastName = "Makhasoeva"}
+                , contact = Contact { address = Address { street = "Class"
+		     	                                        , city = "ified"
+						    		                    , country = "Poland"
+														}
+                , email = "oli@haskell.love"}
+				}
+  , speakers = [...]}
+```
+
+---
+[.code-highlight: 1-4]
+
+```haskell
+_organizer :: Lens' Conference Organizer
+_contact :: Lens' Organizer Contact
+_address :: Lens' Contact Address
+_country :: Lens' Address String
+
+λ> haskellLove & _organizer . _contact . _address . _country .~ "Poland"
+               & _name .~ "Haskell Love 2021"
+Conference
+  { name = "Haskell Love 2021"
+  , organizer =
+      Organizer { name = Name {firstName = "Oli", lastName = "Makhasoeva"}
+                , contact = Contact { address = Address { street = "Class"
+		     	                                        , city = "ified"
+						    		                    , country = "Poland"
+														}
+                , email = "oli@haskell.love"}
+				}
+  , speakers = [...]}
+```
+
+---
+[.code-highlight: 4-7]
+```haskell
+{-# LANGUAGE TemplateHaskell #-}
+module TheLens where
+
+data Ticket = Ticket
+  { _event :: String
+  , _price :: Int
+  } deriving Show
+
+makeLenses ''Ticket
+
+λ> ticket = Ticket "Haskell Love" 0
+λ> ticket ^. price
+0
+λ> ticket & event .~ "Haskell Love 2020"
+Ticket {_event = "Haskell Love 2020", _price = 0}
+```
+---
+[.code-highlight: 1-2,4-7]
+```haskell
+{-# LANGUAGE TemplateHaskell #-}
+module TheLens where
+
+data Ticket = Ticket
+  { _event :: String
+  , _price :: Int
+  } deriving Show
+
+makeLenses ''Ticket
+
+λ> ticket = Ticket "Haskell Love" 0
+λ> ticket ^. price
+0
+λ> ticket & event .~ "Haskell Love 2020"
+Ticket {_event = "Haskell Love 2020", _price = 0}
+```
+---
+[.code-highlight: 1-2,4-9]
+```haskell
+{-# LANGUAGE TemplateHaskell #-}
+module TheLens where
+
+data Ticket = Ticket
+  { _event :: String
+  , _price :: Int
+  } deriving Show
+
+makeLenses ''Ticket
+
+λ> ticket = Ticket "Haskell Love" 0
+λ> ticket ^. price
+0
+λ> ticket & event .~ "Haskell Love 2020"
+Ticket {_event = "Haskell Love 2020", _price = 0}
+```
+---
+[.code-highlight: 1-2,4-11]
+```haskell
+{-# LANGUAGE TemplateHaskell #-}
+module TheLens where
+
+data Ticket = Ticket
+  { _event :: String
+  , _price :: Int
+  } deriving Show
+
+makeLenses ''Ticket
+
+λ> ticket = Ticket "Haskell Love" 0
+λ> ticket ^. price
+0
+λ> ticket & event .~ "Haskell Love 2020"
+Ticket {_event = "Haskell Love 2020", _price = 0}
+```
+
+---
+[.code-highlight: 1-2,4-13]
+```haskell
+{-# LANGUAGE TemplateHaskell #-}
+module TheLens where
+
+data Ticket = Ticket
+  { _event :: String
+  , _price :: Int
+  } deriving Show
+
+makeLenses ''Ticket
+
+λ> ticket = Ticket "Haskell Love" 0
+λ> ticket ^. price
+0
+λ> ticket & event .~ "Haskell Love 2020"
+Ticket {_event = "Haskell Love 2020", _price = 0}
+```
+
+---
+```haskell
+{-# LANGUAGE TemplateHaskell #-}
+module TheLens where
+
+data Ticket = Ticket
+  { _event :: String
+  , _price :: Int
+  } deriving Show
+
+makeLenses ''Ticket
+
+λ> ticket = Ticket "Haskell Love" 0
+λ> ticket ^. price
+0
+λ> ticket & event .~ "Haskell Love 2020"
+Ticket {_event = "Haskell Love 2020", _price = 0}
+```
+
+---
+
+# generic-lens [^2]
+
+
+[^2]: [https://hackage.haskell.org/package/generic-lens](https://hackage.haskell.org/package/generic-lens).
