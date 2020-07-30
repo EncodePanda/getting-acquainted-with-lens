@@ -1739,4 +1739,205 @@ Name {firstName = "Oli", lastName = "Makhasoeva"}
 
 ---
 
-# What else can we do?
+# Lens' s a
+
+---
+
+# Lens s t a b
+
+---
+
+> "Shitty records."
+- Someone on reddit
+
+
+---
+
+![inline](presentation/stab.gif)
+
+---
+
+# Lens s t a b
+
+---
+
+# Lens s t a b
+
+```haskell
+λ> :t lens
+lens :: (s -> a) -> (s -> b -> t) -> Lens s t a b
+
+type Lens' s a = Lens s s a a
+
+```
+
+---
+
+```haskell
+first :: Lens' (a, b) a
+first = lens getter setter
+  where
+    getter (a, _) = a
+    setter (_, b) a = (a, b)
+
+λ> (10, 20) ^. first
+10
+λ> (10, 20) & first .~ 30
+(30,20)
+λ> (10, 20) & first .~ "hello"
+
+<interactive>:25:2: error:
+    • Could not deduce (Num [Char]) arising from the literal ‘10’
+      from the context: Num b
+
+```
+
+---
+
+```haskell
+first :: Lens (a, c) (b, c) a b
+first = lens getter setter
+  where
+    getter (a, _) = a
+    setter (_, b) c = (c, b)
+
+λ> (10, 20) ^. first
+10
+λ> (10, 20) & first .~ 30
+(30,20)
+λ> (10, 20) & first .~ "hello"
+("hello",20)
+```
+
+---
+
+```haskell
+data Truck a = Truck
+ { name  :: String
+ , cargo :: a
+ } deriving (Show, Generic)
+
+data Fruit = Apple | Orange deriving Show
+data Electronic = Computer | Phone deriving Show
+
+λ> truck = Truck "Tom" Apple
+truck :: Truck Fruit
+
+λ> otherTruck = truck & #cargo .~ Phone
+otherTruck :: Truck Electronic
+```
+
+---
+
+```haskell
+λ> truck = Truck "tom" [Apple, Orange, Apple]
+
+λ> truck & #cargo .~ (truck ^. #cargo <> [Orange, Apple])
+Truck { name = "tom"
+      , cargo = [Apple,Orange,Apple,Orange,Apple]}
+
+λ> truck & #cargo %~ (\fruits -> fruits <> [Orange, Apple])
+Truck { name = "tom"
+      , cargo = [Apple,Orange,Apple,Orange,Apple]}
+
+λ> truck & #cargo <>~ [Orange, Apple]
+Truck { name = "tom"
+      , cargo = [Apple,Orange,Apple,Orange,Apple]}
+
+```
+---
+
+```haskell
+λ> truck = Truck "tom" [Apple, Orange, Apple]
+
+λ> truck & #cargo %~ length
+         & #cargo +~ 1
+Truck {name = "tom", cargo = 4}
+
+λ> truck & #cargo %~ length
+         & #cargo *~ 10
+Truck {name = "tom", cargo = 30}
+
+```
+
+---
+
+# Other Optics
+
+---
+
+# Traversal s t a b
+
+---
+
+```haskell
+λ> haskellLove ^. #speakers
+[ Speaker { name = Name {firstName = "Pawel", lastName = "Szulc"}
+          , slidesReady = False}
+, Speaker { name = Name {firstName = "Marcin", lastName = "Rzeznicki"}
+          , slidesReady = True}
+]
+
+λ> haskellLove ^.. #speakers . traversed . #name . #lastName
+["Szulc","Rzeznicki"]
+
+λ> haskellLove ^. #speakers . traversed . #name . #lastName
+"SzulcRzeznicki"
+```
+
+---
+
+# Anyone ready?
+
+```haskell
+anyOf :: Traversal s t a b -> (a -> Bool) -> s -> Bool
+
+λ> anyOf (#speakers . traversed . #slidesReady) id haskellLove
+True
+```
+
+---
+
+```haskell
+λ> haskellLove & #speakers %~ (fmap (set #slidesReady False))
+Conference
+  { name = "Haskell.Love"
+  , organizer = Organizer {..}
+  , speakers = [ Speaker { name = Name { firstName = "Pawel"
+	                     , lastName = "Szulc"}
+	                     , slidesReady = False}
+               , Speaker { name = Name { firstName = "Marcin"
+	                     , lastName = "Rzeznicki"}
+	                     , slidesReady = False}
+	           ]
+  }
+```
+---
+
+```haskell
+λ> haskellLove & #speakers . traversed . #slidesReady .~ False
+Conference
+  { name = "Haskell.Love"
+  , organizer = Organizer {..}
+  , speakers = [ Speaker { name = Name { firstName = "Pawel"
+	                     , lastName = "Szulc"}
+	                     , slidesReady = False}
+               , Speaker { name = Name { firstName = "Marcin"
+	                     , lastName = "Rzeznicki"}
+	                     , slidesReady = False}
+	           ]
+  }
+```
+
+---
+
+# Reveal the magic
+
+![](presentation/magic2.gif)
+
+---
+
+# Exhibit A: Lens s t a b
+
+1. How to encode getter and setter in one type?
+2. How to compose via "dot"?
