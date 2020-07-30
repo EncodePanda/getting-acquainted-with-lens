@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: abdbcb597f0ff95c8111bc04c66deae285c7a7642b0c21ad2c0cb66fac4f76ee
+-- hash: c76c54d303691c63ae510fd1dfd10850a09d9f298eb762b6f5d8112a393b7a00
 
 name:           getting-acquainted-with-lens
 version:        0.1.0.0
@@ -28,6 +28,7 @@ source-repository head
 library
   exposed-modules:
       Example
+      GenericLens
       Lib
       TheLens
       WhyLens
@@ -35,6 +36,7 @@ library
       Paths_getting_acquainted_with_lens
   hs-source-dirs:
       src
+  default-extensions: DataKinds DeriveGeneric DuplicateRecordFields FlexibleInstances FlexibleContexts MultiParamTypeClasses OverloadedLabels TypeApplications AllowAmbiguousTypes
   build-depends:
       base >=4.7 && <5
     , generic-lens
@@ -47,6 +49,7 @@ executable getting-acquainted-with-lens-exe
       Paths_getting_acquainted_with_lens
   hs-source-dirs:
       app
+  default-extensions: DataKinds DeriveGeneric DuplicateRecordFields FlexibleInstances FlexibleContexts MultiParamTypeClasses OverloadedLabels TypeApplications AllowAmbiguousTypes
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
@@ -62,6 +65,7 @@ test-suite getting-acquainted-with-lens-test
       Paths_getting_acquainted_with_lens
   hs-source-dirs:
       test
+  default-extensions: DataKinds DeriveGeneric DuplicateRecordFields FlexibleInstances FlexibleContexts MultiParamTypeClasses OverloadedLabels TypeApplications AllowAmbiguousTypes
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5

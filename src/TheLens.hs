@@ -30,5 +30,4 @@ data Ticket = Ticket
   { _event :: String
   , _price :: Int
   } deriving Show
-
 makeLenses ''Ticket

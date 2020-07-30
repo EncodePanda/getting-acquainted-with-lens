@@ -24,6 +24,17 @@ dependencies:
 - lens
 - generic-lens
 
+default-extensions:
+-  DataKinds
+-  DeriveGeneric
+-  DuplicateRecordFields
+-  FlexibleInstances
+-  FlexibleContexts
+-  MultiParamTypeClasses
+-  OverloadedLabels
+-  TypeApplications
+-  AllowAmbiguousTypes
+
 library:
   source-dirs: src
 

@@ -6,7 +6,6 @@ slidenumbers: true
 ### @EncodePanda
 
 ---
-
 # This talk is about __Lens__[^1]
 
 1. What problem they are trying to solve?
@@ -17,6 +16,7 @@ slidenumbers: true
 
 ---
 
+[.build-lists: true]
 # There are two things fundamentally broken in Haskell
 
 1. Record syntax
@@ -160,9 +160,9 @@ data Speaker = Speaker
 ---
 
 ```haskell
-data Conference = Conference
-  { organizer :: Organizer
-  , speakers  :: [Speaker]
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
   } deriving Show
 
 oli :: Organizer
@@ -173,12 +173,12 @@ oli = Organizer
 ```
 
 ---
-[.code-highlight: 8]
+[.code-highlight: 2,8]
 
 ```haskell
-data Conference = Conference
-  { organizer :: Organizer
-  , speakers  :: [Speaker]
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
   } deriving Show
 
 oli :: Organizer
@@ -191,9 +191,9 @@ oli = Organizer
 ---
 
 ```haskell
-data Conference = Conference
-  { organizer :: Organizer
-  , speakers  :: [Speaker]
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
   } deriving Show
 ```
 
@@ -205,9 +205,9 @@ name :: Organizer -> Name
 ---
 
 ```haskell
-data Conference = Conference
-  { organizer :: Organizer
-  , speakers  :: [Speaker]
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
   } deriving Show
 ```
 
@@ -274,9 +274,9 @@ import Data.Function ((&))
 ---
 
 ```haskell
-data Conference = Conference
-  { organizer :: Organizer
-  , speakers  :: [Speaker]
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
   } deriving Show
 ```
 
@@ -288,9 +288,9 @@ Name {firstName = "Oli", lastName = "Makhasoeva"}
 ---
 
 ```haskell
-data Conference = Conference
-  { organizer :: Organizer
-  , speakers  :: [Speaker]
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
   } deriving Show
 ```
 
@@ -302,9 +302,9 @@ Name {firstName = "Oli", lastName = "Makhasoeva"}
 ---
 
 ```haskell
-data Conference = Conference
-  { organizer :: Organizer
-  , speakers  :: [Speaker]
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
   } deriving Show
 ```
 
@@ -906,6 +906,10 @@ changeOrganizerEmail modifyEmail conference =
 
 ---
 
+![inline](presentation/stackoverflowlogo.png)
+
+---
+
 ![inline](presentation/oracle.png)
 
 ---
@@ -1035,7 +1039,7 @@ _country :: Lens' Address String
 ```haskell
 _organizer :: Lens' Conference Organizer
 _contact ::              Lens' Organizer Contact
-_address ::                       Lens' Contact Address
+_address ::                        Lens' Contact Address
 _country ::                              Lens' Address String
 
 λ> haskelllove ^. _organizer . _contact . _address . _country
@@ -1311,6 +1315,140 @@ Conference
 ```
 
 ---
+[.code-highlight: 1-4]
+
+```haskell
+_organizer :: Lens' Conference Organizer
+_contact :: Lens' Organizer Contact
+_address :: Lens' Contact Address
+_country :: Lens' Address String
+
+λ> :t lens
+lens :: (s -> a) -> (s -> a -> s) -> Lens' s a
+```
+
+---
+```haskell
+_organizer :: Lens' Conference Organizer
+_contact :: Lens' Organizer Contact
+_address :: Lens' Contact Address
+_country :: Lens' Address String
+
+λ> :t lens
+lens :: (s -> a) -> (s -> a -> s) -> Lens' s a
+```
+
+---
+```haskell
+_organizer :: Lens' Conference Organizer
+_contact :: Lens' Organizer Contact
+_address :: Lens' Contact Address
+_country :: Lens' Address String
+```
+
+---
+```haskell
+_organizer :: Lens' Conference Organizer
+_organizer = lens getter setter
+  where
+    getter = organizer
+    setter c o = c { organizer = o}
+```
+
+---
+
+# But
+
+---
+[.code-highlight: 1-5]
+```haskell
+_name :: Lens' Conference String
+_name = lens getter setter
+  where
+    getter = name
+    setter c n = c { name = n }
+
+/../src/TheLens.hs:23:14: error:
+Ambiguous occurrence ‘name’
+It could refer to
+  either the field ‘name’,
+    imported from ‘Example’ at src/TheLens.hs:6:1-24
+  or the field ‘name’,
+    imported from ‘Example’ at src/TheLens.hs:6:1-24
+  or the field ‘name’,
+    imported from ‘Example’ at src/TheLens.hs:6:1-24
+```
+
+---
+```haskell
+_name :: Lens' Conference String
+_name = lens getter setter
+  where
+    getter = name
+    setter c n = c { name = n }
+
+/../src/TheLens.hs:23:14: error:
+Ambiguous occurrence ‘name’
+It could refer to
+  either the field ‘name’,
+    imported from ‘Example’ at src/TheLens.hs:6:1-24
+  or the field ‘name’,
+    imported from ‘Example’ at src/TheLens.hs:6:1-24
+  or the field ‘name’,
+    imported from ‘Example’ at src/TheLens.hs:6:1-24
+```
+---
+```haskell
+_name :: Lens' Conference String
+_name = lens getter setter
+  where
+    getter (Conference n _ _) = n
+    setter (Conference _ o s) n = Conference n o s
+```
+
+---
+
+```haskell
+_organizer :: Lens' Conference Organizer
+_contact :: Lens' Organizer Contact
+_address :: Lens' Contact Address
+_country :: Lens' Address String
+```
+---
+
+```haskell
+_organizer :: Lens' Conference Organizer
+_organizer = lens getter setter
+  where
+    getter = organizer
+    setter c o = c { organizer = o}
+
+_name :: Lens' Conference String
+_name = lens getter setter
+  where
+    getter (Conference n _ _) = n
+    setter (Conference _ o s) n = Conference n o s
+
+_contact :: Lens' Organizer Contact
+_contact = lens contact (\o -> \c -> o { contact = c})
+
+_address :: Lens' Contact Address
+_address = lens address (\c -> \a -> c { address = a})
+
+_country :: Lens' Address String
+_country = lens country (\a -> \c -> a { country = c})
+```
+---
+
+# Approach #1 - TemplateHaskell
+
+---
+
+![inline](presentation/macro.jpg)
+
+---
+
+
 [.code-highlight: 4-7]
 ```haskell
 {-# LANGUAGE TemplateHaskell #-}
@@ -1428,7 +1566,177 @@ Ticket {_event = "Haskell Love 2020", _price = 0}
 
 ---
 
+# But
+
+---
+[.code-highlight: 1-5]
+
+```haskell
+data Ticket = Ticket
+  { _event :: String
+  , _price :: Int
+  } deriving Show
+makeLenses ''Ticket
+
+data Item = Item
+  { _id    :: Int
+  , _price :: Int
+  }
+makeLenses ''Item
+
+/../src/TheLens.hs:39:1: error:
+  Multiple declarations of ‘price’
+  Declared at: src/TheLens.hs:33:1
+               src/TheLens.hs:39:1
+   |
+39 | makeLenses ''Item
+   | ^^^^^^^^^^^^^^^^^
+```
+
+---
+[.code-highlight: 1-11]
+
+```haskell
+data Ticket = Ticket
+  { _event :: String
+  , _price :: Int
+  } deriving Show
+makeLenses ''Ticket
+
+data Item = Item
+  { _id    :: Int
+  , _price :: Int
+  }
+makeLenses ''Item
+
+/../src/TheLens.hs:39:1: error:
+  Multiple declarations of ‘price’
+  Declared at: src/TheLens.hs:33:1
+               src/TheLens.hs:39:1
+   |
+39 | makeLenses ''Item
+   | ^^^^^^^^^^^^^^^^^
+```
+
+---
+```haskell
+data Ticket = Ticket
+  { _event :: String
+  , _price :: Int
+  } deriving Show
+makeLenses ''Ticket
+
+data Item = Item
+  { _id    :: Int
+  , _price :: Int
+  }
+makeLenses ''Item
+
+/../src/TheLens.hs:39:1: error:
+  Multiple declarations of ‘price’
+  Declared at: src/TheLens.hs:33:1
+               src/TheLens.hs:39:1
+   |
+39 | makeLenses ''Item
+   | ^^^^^^^^^^^^^^^^^
+```
+
+---
+
+# Approach #2 - GHC.Generics
+
+---
+
 # generic-lens [^2]
 
 
 [^2]: [https://hackage.haskell.org/package/generic-lens](https://hackage.haskell.org/package/generic-lens).
+
+
+---
+
+```haskell
+data Conference = Conference
+  { name      :: String
+  , organizer :: Organizer
+  , speakers  :: [Speaker]
+  } deriving Show
+
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
+  } deriving Show
+...
+```
+
+---
+```haskell
+data Conference = Conference
+  { name      :: String
+  , organizer :: Organizer
+  , speakers  :: [Speaker]
+  } deriving (Generic, Show)
+
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
+  } deriving (Generic, Show)
+...
+```
+
+---
+```haskell
+λ> haskellLove ^. field @"organizer" . field @"contact" . field @"email"
+"oli@haskell.love"
+```
+
+---
+```haskell
+λ> haskellLove ^. #organizer . #contact . #email
+"oli@haskell.love"
+```
+
+---
+```haskell
+data Conference = Conference
+  { name      :: String
+  , organizer :: Organizer
+  , speakers  :: [Speaker]
+  } deriving (Generic, Show)
+
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
+  } deriving (Generic, Show)
+...
+```
+
+---
+[.code-highlight: 2,8]
+
+```haskell
+data Conference = Conference
+  { name      :: String
+  , organizer :: Organizer
+  , speakers  :: [Speaker]
+  } deriving (Generic, Show)
+
+data Organizer = Organizer
+  { name    :: Name
+  , contact :: Contact
+  } deriving (Generic, Show)
+...
+```
+
+---
+```haskell
+λ> haskellLove ^. #name
+"Haskell.Love"
+
+λ> haskellLove ^. #organizer . #name
+Name {firstName = "Oli", lastName = "Makhasoeva"}
+```
+
+---
+
+# What else can we do?

@@ -1,44 +1,39 @@
-{-# LANGUAGE DataKinds             #-}
-{-# LANGUAGE DuplicateRecordFields #-}
-{-# LANGUAGE FlexibleInstances     #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE OverloadedLabels      #-}
-{-# LANGUAGE TypeApplications      #-}
 module Example where
 
+import           GHC.Generics
 import           GHC.OverloadedLabels (IsLabel (..))
 
 data Conference = Conference
   { name      :: String
   , organizer :: Organizer
   , speakers  :: [Speaker]
-  } deriving Show
+  } deriving (Generic, Show)
 
 data Organizer = Organizer
   { name    :: Name
   , contact :: Contact
-  } deriving Show
+  } deriving (Generic, Show)
 
 data Name = Name
   { firstName :: String
   , lastName  :: String
-  } deriving Show
+  } deriving (Generic, Show)
 
 data Contact = Contact
   { address :: Address
   , email   :: String
-  } deriving Show
+  } deriving (Generic, Show)
 
 data Speaker = Speaker
   { name        :: Name
   , slidesReady :: Bool
-  } deriving Show
+  } deriving (Generic, Show)
 
 data Address = Address
   { street  :: String
   , city    :: String
   , country :: String
-  } deriving Show
+  } deriving (Generic, Show)
 
 haskellLove :: Conference
 haskellLove = Conference
