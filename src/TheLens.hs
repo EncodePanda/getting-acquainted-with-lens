@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 module TheLens where
 
-import           Control.Lens
+import           Control.Lens    hiding (over)
 import           Control.Lens.TH
 import           Example
 
@@ -31,3 +31,12 @@ data Ticket = Ticket
   , _price :: Int
   } deriving Show
 makeLenses ''Ticket
+
+over :: Lens s t a b -> (a -> b) -> s -> t
+over l func s = runIdentity . l (Identity . func) $ s
+
+set :: Lens s t a b -> b -> s -> t
+set l b s =  over l (const b) s
+
+view :: Lens s t a b -> s -> a
+view l s = getConst . l Const $ s

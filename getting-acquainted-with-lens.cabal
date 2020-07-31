@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c76c54d303691c63ae510fd1dfd10850a09d9f298eb762b6f5d8112a393b7a00
+-- hash: bf7df214e329bc9d270b066d3739d4e59df5087ff0d59edcbcaed206402220bb
 
 name:           getting-acquainted-with-lens
 version:        0.1.0.0
@@ -27,6 +27,7 @@ source-repository head
 
 library
   exposed-modules:
+      CreatingLens
       Example
       GenericLens
       Lib
@@ -36,7 +37,7 @@ library
       Paths_getting_acquainted_with_lens
   hs-source-dirs:
       src
-  default-extensions: DataKinds DeriveGeneric DuplicateRecordFields FlexibleInstances FlexibleContexts MultiParamTypeClasses OverloadedLabels TypeApplications AllowAmbiguousTypes
+  default-extensions: DataKinds DeriveGeneric DuplicateRecordFields FlexibleInstances FlexibleContexts MultiParamTypeClasses OverloadedLabels TypeApplications AllowAmbiguousTypes RankNTypes
   build-depends:
       base >=4.7 && <5
     , generic-lens
@@ -49,7 +50,7 @@ executable getting-acquainted-with-lens-exe
       Paths_getting_acquainted_with_lens
   hs-source-dirs:
       app
-  default-extensions: DataKinds DeriveGeneric DuplicateRecordFields FlexibleInstances FlexibleContexts MultiParamTypeClasses OverloadedLabels TypeApplications AllowAmbiguousTypes
+  default-extensions: DataKinds DeriveGeneric DuplicateRecordFields FlexibleInstances FlexibleContexts MultiParamTypeClasses OverloadedLabels TypeApplications AllowAmbiguousTypes RankNTypes
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
@@ -65,7 +66,7 @@ test-suite getting-acquainted-with-lens-test
       Paths_getting_acquainted_with_lens
   hs-source-dirs:
       test
-  default-extensions: DataKinds DeriveGeneric DuplicateRecordFields FlexibleInstances FlexibleContexts MultiParamTypeClasses OverloadedLabels TypeApplications AllowAmbiguousTypes
+  default-extensions: DataKinds DeriveGeneric DuplicateRecordFields FlexibleInstances FlexibleContexts MultiParamTypeClasses OverloadedLabels TypeApplications AllowAmbiguousTypes RankNTypes
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5

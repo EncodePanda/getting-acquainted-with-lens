@@ -402,6 +402,10 @@ data Speaker = Speaker
 
 ---
 
+# We can actually do something about it
+
+---
+
 ![inline](presentation/pray.png)
 
 ---
@@ -1762,6 +1766,18 @@ Name {firstName = "Oli", lastName = "Makhasoeva"}
 ---
 
 # Lens s t a b
+[.code-highlight: 1-2]
+
+```haskell
+λ> :t lens
+lens :: (s -> a) -> (s -> b -> t) -> Lens s t a b
+
+type Lens' s a = Lens s s a a
+
+```
+---
+
+# Lens s t a b
 
 ```haskell
 λ> :t lens
@@ -1771,6 +1787,69 @@ type Lens' s a = Lens s s a a
 
 ```
 
+---
+[.code-highlight: 1-5]
+
+```haskell
+first :: Lens' (a, b) a
+first = lens getter setter
+  where
+    getter (a, _) = a
+    setter (_, b) a = (a, b)
+
+λ> (10, 20) ^. first
+10
+λ> (10, 20) & first .~ 30
+(30,20)
+λ> (10, 20) & first .~ "hello"
+
+<interactive>:25:2: error:
+    • Could not deduce (Num [Char]) arising from the literal ‘10’
+      from the context: Num b
+
+```
+---
+
+[.code-highlight: 1-8]
+```haskell
+first :: Lens' (a, b) a
+first = lens getter setter
+  where
+    getter (a, _) = a
+    setter (_, b) a = (a, b)
+
+λ> (10, 20) ^. first
+10
+λ> (10, 20) & first .~ 30
+(30,20)
+λ> (10, 20) & first .~ "hello"
+
+<interactive>:25:2: error:
+    • Could not deduce (Num [Char]) arising from the literal ‘10’
+      from the context: Num b
+
+```
+---
+
+[.code-highlight: 1-10]
+```haskell
+first :: Lens' (a, b) a
+first = lens getter setter
+  where
+    getter (a, _) = a
+    setter (_, b) a = (a, b)
+
+λ> (10, 20) ^. first
+10
+λ> (10, 20) & first .~ 30
+(30,20)
+λ> (10, 20) & first .~ "hello"
+
+<interactive>:25:2: error:
+    • Could not deduce (Num [Char]) arising from the literal ‘10’
+      from the context: Num b
+
+```
 ---
 
 ```haskell
@@ -1793,6 +1872,7 @@ first = lens getter setter
 ```
 
 ---
+[.code-highlight: 1-5]
 
 ```haskell
 first :: Lens (a, c) (b, c) a b
@@ -1812,6 +1892,23 @@ first = lens getter setter
 ---
 
 ```haskell
+first :: Lens (a, c) (b, c) a b
+first = lens getter setter
+  where
+    getter (a, _) = a
+    setter (_, b) c = (c, b)
+
+λ> (10, 20) ^. first
+10
+λ> (10, 20) & first .~ 30
+(30,20)
+λ> (10, 20) & first .~ "hello"
+("hello",20)
+```
+
+---
+[.code-highlight: 1-4]
+```haskell
 data Truck a = Truck
  { name  :: String
  , cargo :: a
@@ -1828,7 +1925,60 @@ otherTruck :: Truck Electronic
 ```
 
 ---
+[.code-highlight: 1-7]
+```haskell
+data Truck a = Truck
+ { name  :: String
+ , cargo :: a
+ } deriving (Show, Generic)
 
+data Fruit = Apple | Orange deriving Show
+data Electronic = Computer | Phone deriving Show
+
+λ> truck = Truck "Tom" Apple
+truck :: Truck Fruit
+
+λ> otherTruck = truck & #cargo .~ Phone
+otherTruck :: Truck Electronic
+```
+
+---
+[.code-highlight: 1-10]
+```haskell
+data Truck a = Truck
+ { name  :: String
+ , cargo :: a
+ } deriving (Show, Generic)
+
+data Fruit = Apple | Orange deriving Show
+data Electronic = Computer | Phone deriving Show
+
+λ> truck = Truck "Tom" Apple
+truck :: Truck Fruit
+
+λ> otherTruck = truck & #cargo .~ Phone
+otherTruck :: Truck Electronic
+```
+
+---
+```haskell
+data Truck a = Truck
+ { name  :: String
+ , cargo :: a
+ } deriving (Show, Generic)
+
+data Fruit = Apple | Orange deriving Show
+data Electronic = Computer | Phone deriving Show
+
+λ> truck = Truck "Tom" Apple
+truck :: Truck Fruit
+
+λ> otherTruck = truck & #cargo .~ Phone
+otherTruck :: Truck Electronic
+```
+
+---
+[.code-highlight: 1]
 ```haskell
 λ> truck = Truck "tom" [Apple, Orange, Apple]
 
@@ -1843,8 +1993,61 @@ Truck { name = "tom"
 λ> truck & #cargo <>~ [Orange, Apple]
 Truck { name = "tom"
       , cargo = [Apple,Orange,Apple,Orange,Apple]}
-
 ```
+
+---
+[.code-highlight: 1-5]
+```haskell
+λ> truck = Truck "tom" [Apple, Orange, Apple]
+
+λ> truck & #cargo .~ (truck ^. #cargo <> [Orange, Apple])
+Truck { name = "tom"
+      , cargo = [Apple,Orange,Apple,Orange,Apple]}
+
+λ> truck & #cargo %~ (\fruits -> fruits <> [Orange, Apple])
+Truck { name = "tom"
+      , cargo = [Apple,Orange,Apple,Orange,Apple]}
+
+λ> truck & #cargo <>~ [Orange, Apple]
+Truck { name = "tom"
+      , cargo = [Apple,Orange,Apple,Orange,Apple]}
+```
+
+---
+[.code-highlight: 1-9]
+```haskell
+λ> truck = Truck "tom" [Apple, Orange, Apple]
+
+λ> truck & #cargo .~ (truck ^. #cargo <> [Orange, Apple])
+Truck { name = "tom"
+      , cargo = [Apple,Orange,Apple,Orange,Apple]}
+
+λ> truck & #cargo %~ (\fruits -> fruits <> [Orange, Apple])
+Truck { name = "tom"
+      , cargo = [Apple,Orange,Apple,Orange,Apple]}
+
+λ> truck & #cargo <>~ [Orange, Apple]
+Truck { name = "tom"
+      , cargo = [Apple,Orange,Apple,Orange,Apple]}
+```
+
+---
+```haskell
+λ> truck = Truck "tom" [Apple, Orange, Apple]
+
+λ> truck & #cargo .~ (truck ^. #cargo <> [Orange, Apple])
+Truck { name = "tom"
+      , cargo = [Apple,Orange,Apple,Orange,Apple]}
+
+λ> truck & #cargo %~ (\fruits -> fruits <> [Orange, Apple])
+Truck { name = "tom"
+      , cargo = [Apple,Orange,Apple,Orange,Apple]}
+
+λ> truck & #cargo <>~ [Orange, Apple]
+Truck { name = "tom"
+      , cargo = [Apple,Orange,Apple,Orange,Apple]}
+```
+
 ---
 
 ```haskell
@@ -1869,6 +2072,40 @@ Truck {name = "tom", cargo = 30}
 # Traversal s t a b
 
 ---
+[.code-highlight: 1-6]
+
+```haskell
+λ> haskellLove ^. #speakers
+[ Speaker { name = Name {firstName = "Pawel", lastName = "Szulc"}
+          , slidesReady = False}
+, Speaker { name = Name {firstName = "Marcin", lastName = "Rzeznicki"}
+          , slidesReady = True}
+]
+
+λ> haskellLove ^.. #speakers . traversed . #name . #lastName
+["Szulc","Rzeznicki"]
+
+λ> haskellLove ^. #speakers . traversed . #name . #lastName
+"SzulcRzeznicki"
+```
+---
+[.code-highlight: 1-9]
+
+```haskell
+λ> haskellLove ^. #speakers
+[ Speaker { name = Name {firstName = "Pawel", lastName = "Szulc"}
+          , slidesReady = False}
+, Speaker { name = Name {firstName = "Marcin", lastName = "Rzeznicki"}
+          , slidesReady = True}
+]
+
+λ> haskellLove ^.. #speakers . traversed . #name . #lastName
+["Szulc","Rzeznicki"]
+
+λ> haskellLove ^. #speakers . traversed . #name . #lastName
+"SzulcRzeznicki"
+```
+---
 
 ```haskell
 λ> haskellLove ^. #speakers
@@ -1889,6 +2126,8 @@ Truck {name = "tom", cargo = 30}
 
 # Anyone ready?
 
+[.code-highlight: 0]
+
 ```haskell
 anyOf :: Traversal s t a b -> (a -> Bool) -> s -> Bool
 
@@ -1896,6 +2135,16 @@ anyOf :: Traversal s t a b -> (a -> Bool) -> s -> Bool
 True
 ```
 
+---
+
+# Anyone ready?
+
+```haskell
+anyOf :: Traversal s t a b -> (a -> Bool) -> s -> Bool
+
+λ> anyOf (#speakers . traversed . #slidesReady) id haskellLove
+True
+```
 ---
 
 ```haskell
@@ -1941,3 +2190,369 @@ Conference
 
 1. How to encode getter and setter in one type?
 2. How to compose via "dot"?
+
+---
+[.code-highlight: 1-4]
+```haskell
+data Lenz s t a b = Lenz
+  { view :: s -> a
+  , set  :: s -> b -> t
+  }
+
+over :: Lenz s t a b -> (a -> b) -> s -> t
+over lenz func s =
+  let
+    old = view lenz s
+    new = func old
+  in
+    set lenz s new
+
+type Lenz' s a = Lenz s s a a
+```
+
+---
+
+[.code-highlight: 1-12]
+```haskell
+data Lenz s t a b = Lenz
+  { view :: s -> a
+  , set  :: s -> b -> t
+  }
+
+over :: Lenz s t a b -> (a -> b) -> s -> t
+over lenz func s =
+  let
+    old = view lenz s
+    new = func old
+  in
+    set lenz s new
+
+type Lenz' s a = Lenz s s a a
+```
+
+---
+
+```haskell
+data Lenz s t a b = Lenz
+  { view :: s -> a
+  , set  :: s -> b -> t
+  }
+
+over :: Lenz s t a b -> (a -> b) -> s -> t
+over lenz func s =
+  let
+    old = view lenz s
+    new = func old
+  in
+    set lenz s new
+
+type Lenz' s a = Lenz s s a a
+```
+---
+
+# But that "dot" though...
+
+---
+
+```haskell
+data Lenz s t a b = Lenz
+  { view :: s -> a
+  , set  :: s -> b -> t
+  }
+```
+
+---
+
+```haskell
+data Lenz s t a b = Lenz
+  { lenz :: s -> (a, b -> t)
+  }
+```
+
+---
+
+```haskell
+type Lenz s t a b = s -> (a, b -> t)
+```
+
+---
+
+```haskell
+type Lenz s t a b = s -> (a, b -> t)
+```
+
+But this will not compose with itself.
+
+---
+
+```haskell
+type Lens s t a b =
+  forall f. Functor f =>
+    (a -> f b) -> s -> f t
+```
+
+---
+
+![inline](presentation/what.jpg)
+
+---
+
+```haskell
+type Lens s t a b =
+  forall f. Functor f =>
+    (a -> f b) -> s -> f t
+```
+
+---
+[.code-highlight: 1-6]
+```haskell
+type Lens s t a b =
+  forall f. Functor f =>
+    (a -> f b) -> s -> f t
+
+organizer :: Lens' Conference Organizer
+contact :: Lens' Organizer Contact
+
+forall f. Functor f =>
+  (Organizer -> f Organizer) -> (Conference -> f Conference)
+forall f. Functor f =>
+  (Contact-> f Contact) -> (Organizer -> Organizer)
+
+```
+
+---
+```haskell
+type Lens s t a b =
+  forall f. Functor f =>
+    (a -> f b) -> s -> f t
+
+organizer :: Lens' Conference Organizer
+contact :: Lens' Organizer Contact
+
+forall f. Functor f =>
+  (Organizer -> f Organizer) -> (Conference -> f Conference)
+forall f. Functor f =>
+  (Contact-> f Contact) -> (Organizer -> Organizer)
+
+```
+---
+
+```haskell
+type Lens s t a b =
+  forall f. Functor f =>
+    (a -> f b) -> s -> f t
+
+organizer :: Lens' Conference Organizer
+contact :: Lens' Organizer Contact
+
+forall f. Functor f =>
+                           (Organizer -> f Organizer) -> (Conference -> f Conference)
+forall f. Functor f =>
+  (Contact-> f Contact) -> (Organizer -> Organizer)
+```
+
+---
+
+```haskell
+type Lens s t a b =
+  forall f. Functor f =>
+    (a -> f b) -> s -> f t
+
+organizer :: Lens' Conference Organizer
+contact :: Lens' Organizer Contact
+
+forall f. Functor f =>
+                           (Organizer -> f Organizer) -> (Conference -> f Conference)
+forall f. Functor f =>
+  (Contact-> f Contact) -> (Organizer -> Organizer)
+
+:t organizer . contact
+forall f. Functor f =>
+  (Contact-> f Contact) -> (Conference-> Conference)
+```
+
+---
+
+```haskell
+type Lens s t a b =
+  forall f. Functor f =>
+    (a -> f b) -> s -> f t
+```
+
+---
+
+```haskell
+type Lens s t a b =
+  forall f. Functor f =>
+    (a -> f b) -> s -> f t
+
+over :: Lens s t a b -> (a -> b) -> s -> t
+set :: Lens s t a b -> b -> s -> t
+view :: Lens s t a b -> s -> a
+```
+
+---
+
+```haskell
+type Lens s t a b =
+  forall f. Functor f =>
+                        (a -> f b) -> s -> f t
+
+over :: Lens s t a b -> (a ->   b) -> s ->   t
+set :: Lens s t a b -> b -> s -> t
+view :: Lens s t a b -> s -> a
+```
+
+---
+[.code-highlight: 2]
+```haskell
+type Lens s t a b =
+  forall f. Functor f =>
+    (a -> f b) -> s -> f t
+
+over :: Lens s t a b -> (a -> b) -> s -> t
+set :: Lens s t a b -> b -> s -> t
+view :: Lens s t a b -> s -> a
+```
+
+---
+```haskell
+type Lens s t a b =
+  forall f. Functor f =>
+    (a -> f b) -> s -> f t
+
+over :: Lens s t a b -> (a -> b) -> s -> t
+set :: Lens s t a b -> b -> s -> t
+view :: Lens s t a b -> s -> a
+```
+---
+
+```haskell
+type Lens s t a b =
+  forall f. Functor f =>
+    (a -> f b) -> s -> f t
+
+over :: Lens s t a b -> (a -> b) -> s -> t
+over l func s =
+```
+---
+
+```haskell
+type Lens s t a b =
+  forall f. Functor f =>
+    (a -> f b) -> s -> f t
+
+over :: Lens s t a b -> (a -> b) -> s -> t
+over l func s =               l (Identity . func)   s
+```
+
+---
+
+```haskell
+type Lens s t a b =
+  forall f. Functor f =>
+    (a -> f b) -> s -> f t
+
+over :: Lens s t a b -> (a -> b) -> s -> t
+over l func s = runIdentity . l (Identity . func) $ s
+```
+
+---
+
+```haskell
+type Lens s t a b =
+  forall f. Functor f =>
+    (a -> f b) -> s -> f t
+
+over :: Lens s t a b -> (a -> b) -> s -> t
+
+set :: Lens s t a b -> b -> s -> t
+set l b s =  over l (const b) s
+```
+
+---
+
+```haskell
+type Lens s t a b =
+  forall f. Functor f =>
+    (a -> f b) -> s -> f t
+
+view :: Lens s t a b -> s -> a
+```
+
+---
+
+```haskell
+newtype Const a b = Const { getConst :: a }
+
+instance Functor (Const m) where
+  fmap _ (Const v) = Const v
+```
+
+---
+
+```haskell
+type Lens s t a b =
+  forall f. Functor f =>
+    (a -> f b) -> s -> f t
+
+view :: Lens s t a b -> s -> a
+```
+
+---
+
+```haskell
+type Lens s t a b =
+  forall f. Functor f =>
+    (a -> f b) -> s -> f t
+
+view :: Lens s t a b -> s -> a
+view l s =            l Const   s
+```
+
+---
+
+```haskell
+type Lens s t a b =
+  forall f. Functor f =>
+    (a -> f b) -> s -> f t
+
+view :: Lens s t a b -> s -> a
+view l s = getConst . l Const $ s
+```
+
+---
+
+![](presentation/mindblown.gif)
+
+# view :: Lens s t a b -> s -> a
+# view l s = getConst . l Const $ s
+
+---
+
+![inline](presentation/view.png)
+
+---
+
+![left](presentation/oli_avatar.png)
+![right](presentation/marcin_avatar.png)
+
+---
+
+![](presentation/permission.jpg)
+
+---
+
+![left](presentation/oli_avatar.png)
+![right](presentation/marcin_avatar.png)
+
+---
+
+
+![inline](presentation/avatar.png)
+
+# @EncodePanda (Pawel Szulc)
+
+---
+
+# [fit] Thank you!
